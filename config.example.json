@@ -1,0 +1,47 @@
+{
+    "sources": [
+        {
+            "id": "src01",
+            "name": "Source Exemple",
+            "opc_ip": "192.168.1.100",
+            "opc_port": "4840",
+            "opc_url": "opc.tcp://192.168.1.100:4840",
+            "opc_user": "",
+            "opc_pass": "",
+            "excel_path": "C:\\ProgramData\\EdgeFusion\\tags.xlsx",
+            "topic": "factory/data",
+            "client_id": "edgefusion_src01",
+            "mqtt_user": "device01",
+            "mqtt_pass": "password",
+            "qos": 1,
+            "broker_ids": ["brk01", "brk02"]
+        }
+    ],
+    "brokers": [
+        {
+            "id": "brk01",
+            "name": "Broker Local",
+            "host": "192.168.1.10",
+            "port": "1883",
+            "tls": false
+        },
+        {
+            "id": "brk02",
+            "name": "Broker Cloud",
+            "host": "cloud.example.com",
+            "port": "8883",
+            "tls": true,
+            "ca_cert": "C:\\ProgramData\\EdgeFusion\\cert\\ca.crt",
+            "client_cert": "",
+            "client_key": "",
+            "tls_insecure": false
+        }
+    ],
+    "options": {
+        "refresh": 2,
+        "reconnect": 5,
+        "max_buffer": 1000
+    },
+    "stop_login": "",
+    "stop_password": ""
+}
