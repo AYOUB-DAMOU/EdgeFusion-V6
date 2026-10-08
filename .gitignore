@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+dist/
+build/
+*.egg-info/
+
+# Logs
+logs/
+*.log
+*.csv
+
+# Runtime data
+buffer_*.json
+status.json
+
+# Certificates (sensitive)
+*.pem
+*.crt
+*.key
+
+# Config with passwords
+config.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+.DS_Store
