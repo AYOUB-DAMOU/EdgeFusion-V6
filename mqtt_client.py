@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 import ssl
 import json
+import os
 from datetime import datetime
 
 
@@ -38,6 +39,15 @@ def connect_mqtt(broker_config, on_connect_cb=None, on_disconnect_cb=None):
         certfile     = broker_config.get("client_cert", "") or None
         keyfile      = broker_config.get("client_key", "")  or None
         tls_insecure = broker_config.get("tls_insecure", False)
+
+        if ca_certs and not os.path.isfile(ca_certs):
+            ca_certs = None
+        if certfile and not os.path.isfile(certfile):
+            certfile = None
+            keyfile = None
+        if keyfile and not os.path.isfile(keyfile):
+            certfile = None
+            keyfile = None
 
         ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         if ca_certs:

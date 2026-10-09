@@ -1,8 +1,8 @@
 """
 Logs EdgeFusion — fichier uniquement, aucun affichage dans l'interface.
 
-Emplacement : C:\\ProgramData\\EdgeFusion\\logs\\edgefusion_YYYY-MM-DD.log
-Rotation     : un fichier par jour, jamais supprimé
+Emplacement : C:\\ProgramData\\EdgeFusion\\logs\\YYYY\\MM\\edgefusion_YYYY-MM-DD.log
+Rotation     : un fichier par jour, classé par année/mois, jamais supprimé
 Format       : [2026-01-15 14:32:01] [INFO    ] [module] message
 """
 import logging
@@ -20,7 +20,10 @@ _DATE = "%Y-%m-%d %H:%M:%S"
 
 
 def _get_log_file():
-    return os.path.join(LOG_DIR, f"edgefusion_{datetime.now().strftime('%Y-%m-%d')}.log")
+    now = datetime.now()
+    month_dir = os.path.join(LOG_DIR, str(now.year), f"{now.month:02d}")
+    os.makedirs(month_dir, exist_ok=True)
+    return os.path.join(month_dir, f"edgefusion_{now.strftime('%Y-%m-%d')}.log")
 
 
 class DailyFileHandler(logging.FileHandler):

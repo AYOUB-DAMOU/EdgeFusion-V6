@@ -70,6 +70,7 @@ def run_source(source_config, broker_configs, options):
 
     opc_client          = None
     mqtt_clients        = {bid: None for bid in mqtt_configs}  # {broker_id: client|None}
+    mqtt_needs_reconnect = {bid: False for bid in mqtt_configs}
     last_opc_attempt    = 0
     last_mqtt_attempts  = {bid: 0 for bid in mqtt_configs}
     buffers             = {bid: buffer_load(f"{source_id}_{bid}") for bid in mqtt_configs}
@@ -103,6 +104,7 @@ def run_source(source_config, broker_configs, options):
                 _log.warning(f"[MQTT:{source_id}→{bid}] Echec rc={rc}")
 
         def on_disconnect(rc):
+            mqtt_needs_reconnect[bid] = True
             _update_mqtt_status(source_id, bid, "DISCONNECTED")
             _log.warning(f"[MQTT:{source_id}→{bid}] Déconnecté rc={rc}")
 
@@ -147,6 +149,18 @@ def run_source(source_config, broker_configs, options):
                 opc_client = None
                 _update_status(source_id, opc="DISCONNECTED")
                 _log.error(f"[OPC:{source_id}] Erreur connexion : {e}")
+
+        # ===== FORCE RECONNEXION MQTT (après déconnexion) =====
+        for bid in list(mqtt_configs.keys()):
+            if mqtt_needs_reconnect[bid] and mqtt_clients[bid] is not None:
+                try:
+                    mqtt_clients[bid].loop_stop()
+                    mqtt_clients[bid].disconnect()
+                except Exception:
+                    pass
+                mqtt_clients[bid] = None
+                mqtt_needs_reconnect[bid] = False
+                last_mqtt_attempts[bid] = time.time()
 
         # ===== RECONNEXION MQTT — indépendante par broker =====
         for bid, mcfg in mqtt_configs.items():
